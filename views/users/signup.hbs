@@ -1,0 +1,29 @@
+<form action="/users/signin" method="POST">
+    {{#if missatgeError}}
+    <div role="alert">
+        {{missatgeError}}
+    </div>
+    {{/if}}
+    <div>
+        <input type="text" id="username" name="username">
+        <label for="username">Username</label>
+    </div>
+    
+    <div>
+        <input type="password" id="password" name="password">
+        <label for="password">Password</label>
+    </div>
+
+    <div>
+        <input type="password" id="password" name="passwordRepeat">
+        <label for="password">Repeat password</label>
+    </div>
+
+    </div>
+  
+    <button type="submit">Signin</button>
+    <p>
+        Do you have an account?
+        <a href="/users/login">Log in</a>
+    </p>
+</form>
