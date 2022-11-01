@@ -5,13 +5,16 @@ const User = require("../models/User.model.js")
 const bcrypt = require("bcryptjs")
 const saltRounds = 10
 
+const isLoggedIn = require("../middleware/isLoggedIn.js");
+const isLoggedOut = require("../middleware/isLoggedOut.js");
+
 // Vista de users/login
-router.get("/login", (req, res, next)=>{
+router.get("/login", isLoggedOut, (req, res, next)=>{
     res.render("users/login");
 })
 
 // Vista cuando rellenas el formulario de users/login: si está bien te lleva a users/profile, sino a users/login
-router.post("/login", (req, res, next)=>{
+router.post("/login", isLoggedOut, (req, res, next)=>{
     const { username, password } = req.body;
 
     User.findOne({username})
@@ -31,12 +34,12 @@ router.post("/login", (req, res, next)=>{
 })
 
 // Vista de users/singup
-router.get("/signup", (req, res, next)=>{
+router.get("/signup", isLoggedOut, (req, res, next)=>{
     res.render("users/signup");
 })
 
 // Vista cuando te registras: si todo va bien te lleva a users/profile, si hay algo mal, users/signup
-router.post("/signup", (req, res, next)=>{
+router.post("/signup", isLoggedOut, (req, res, next)=>{
     const {username, password, passwordRepeat} = req.body;
 
     if(!username || !password  || !passwordRepeat) {
@@ -82,11 +85,23 @@ router.post("/signup", (req, res, next)=>{
 })
 
 // Para ver la vista de users/profile
-router.get("/profile", (req, res, next)=>{
+router.get("/profile", isLoggedIn, (req, res, next)=>{
     const data = {missatgeError: "Diferent passwords"};
     if(req.session.currentUser) data.username = req.session.currentUser.username;
 
     res.render("users/profile", data);    
 });
 
+router.get("/main", isLoggedIn ,(req, res, next)=>{
+    const data = {missatgeError: "No estás loggeado"};
+    if(req.session.currentUser) data.username = req.session.currentUser.username;
+    res.render("users/main", data);    
+});
+
+
+router.get("/private", isLoggedIn ,(req, res, next)=>{
+    const data = {missatgeError: "No estás loggeado"};
+    if(req.session.currentUser) data.username = req.session.currentUser.username;
+    res.render("users/private", data);    
+});
 module.exports = router
